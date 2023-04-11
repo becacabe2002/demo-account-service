@@ -1,5 +1,6 @@
-package com.wiinvent.account.accountservice.domain.models;
+package com.wiinvent.account.accountservice.domain.repository;
 
+import com.wiinvent.account.accountservice.domain.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
