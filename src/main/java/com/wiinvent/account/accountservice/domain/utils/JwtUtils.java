@@ -2,6 +2,7 @@ package com.wiinvent.account.accountservice.domain.utils;
 
 import com.wiinvent.account.accountservice.domain.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +21,11 @@ import java.util.function.Function;
 @Log4j2
 public class JwtUtils {
 
-    private String jwtSecret = "abajihi3hi234hihi3f09acn";
-    private long jwtExprirationMs = 7200;
+    @Value("${application.security.jwt.secret-key}")
+    private String jwtSecret;
 
+    @Value("${application.security.jwt.expiration}")
+    private long jwtExprirationMs;
     // todo create generateRefreshToken()
 
     //region master branch method
@@ -66,7 +69,7 @@ public class JwtUtils {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ jwtExprirationMs))
-                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .signWith(getSignInKey())
                 .compact();
     }
 
@@ -127,5 +130,8 @@ public class JwtUtils {
 //        return false;
 //    }
     //end region
-
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 }
