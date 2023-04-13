@@ -39,7 +39,7 @@ public class ApplicationConfig {
 
     /**
      * Authenticate user based on just username and password
-     * @return
+     * @return - authentication manager
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration conf) throws Exception {

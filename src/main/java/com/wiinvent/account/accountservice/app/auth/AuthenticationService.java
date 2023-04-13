@@ -5,6 +5,7 @@ import com.wiinvent.account.accountservice.domain.models.User;
 import com.wiinvent.account.accountservice.domain.repository.UserRepository;
 import com.wiinvent.account.accountservice.domain.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,26 +16,28 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
+    @Autowired
     private final UserRepository repository;
 
+    @Autowired
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
     private final JwtUtils jwtUtils;
 
+    @Autowired
     private final AuthenticationManager authenticationManager;
     public AuthenticationResponse register(RegisterRequest request){
         var user = User.builder()
-                .fname(request.getFirstname())
-                .lname(request.getLastname())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
         repository.save(user);
         var jwtToken = jwtUtils.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return new AuthenticationResponse("Success.");
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request){

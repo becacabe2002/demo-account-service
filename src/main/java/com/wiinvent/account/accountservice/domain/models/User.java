@@ -22,8 +22,8 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String fname;
-    private String lname;
+    private String firstname;
+    private String lastname;
     private String email;
     private String password;
     // dont need to implement getPassword()
