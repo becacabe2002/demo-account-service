@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "9ba086da-32c7-4e38-a4a9-6a4d6e02489b",
+		"name": "Demo Account Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26693845"
+	},
+	"item": [
+		{
+			"name": "register_user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\": \"tu\",\n    \"lastname\": \"ngo\",\n    \"email\": \"becacabe2002@gmail.com\",\n    \"password\": \"29122002\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localAccountService}}/auth/register",
+					"host": [
+						"{{localAccountService}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authenticate_user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"becacabe2002@gmail.com\",\n    \"password\": \"29122002\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localAccountService}}/auth/authenticate",
+					"host": [
+						"{{localAccountService}}"
+					],
+					"path": [
+						"auth",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "access_demo_controller",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJiZWNhY2FiZTIwMDJAZ21haWwuY29tIiwiaWF0IjoxNjgxMzU3MTQzLCJleHAiOjE2ODEzNTcyMTV9.n0M9uhMl3hp_JURssLEEB2lrW3x_vGjH1yQZtMRyvvUxh0MmX5PzIHp_Avx_Q7s9",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"becacabe2002@gmail.com\",\n    \"password\": \"29122002\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localAccountService}}/demo-controller",
+					"host": [
+						"{{localAccountService}}"
+					],
+					"path": [
+						"demo-controller"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout_user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{localAccountService}}/logout",
+					"host": [
+						"{{localAccountService}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refresh_token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJiZWNhY2FiZTIwMDJAZ21haWwuY29tIiwiaWF0IjoxNjgxNzkwODc5LCJleHAiOjE2ODE3OTE0ODR9.fK0u293zTEegvESQYuy5vyf2ZKU9lBCOa80P-4b5XauqPWG5GGcM745vliqg7b7S",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{localAccountService}}/auth/refresh-token",
+					"host": [
+						"{{localAccountService}}"
+					],
+					"path": [
+						"auth",
+						"refresh-token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

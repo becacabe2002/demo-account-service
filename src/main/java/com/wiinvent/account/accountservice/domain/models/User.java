@@ -16,7 +16,7 @@ to reduce boilerplate by generating getter and setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "user")
 @Table(name = "user")
 public class User implements UserDetails {
     @Id
@@ -31,6 +31,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    // inverse entity
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokenList;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

@@ -28,16 +28,8 @@ public class JwtUtils {
     private long jwtExprirationMs;
     // todo create generateRefreshToken()
 
-    //region master branch method
-//    public String getUserNameFromJwtToken(String token){
-//        log.debug("exp config" + jwtExprirationMs);
-//
-//        log.debug(Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration());
-//        log.debug(Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getIssuedAt());
-//        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
-//    }
-    //endregion
-
+    @Value("${application.security.jwt.refresh-token.expiration}")
+    private long refreshTokenExprirationMs;
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -64,19 +56,31 @@ public class JwtUtils {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ){
-        return Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ jwtExprirationMs))
-                .signWith(getSignInKey())
-                .compact();
+        return buildToken(extraClaims, userDetails, jwtExprirationMs);
     }
 
     public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>(), userDetails);
     }
 
+    public String generateRefreshToken(
+            UserDetails userDetails
+    ){
+        return buildToken(new HashMap<>(), userDetails, refreshTokenExprirationMs);
+    }
+
+    private String buildToken(Map<String, Object> extraClaims,
+                              UserDetails userDetails,
+                              long expriration
+    ){
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+ expriration))
+                .signWith(getSignInKey())
+                .compact();
+    }
     public boolean checkTokenValid(String token, UserDetails userDetails){
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !checkTokenExpired(token));
@@ -86,50 +90,8 @@ public class JwtUtils {
         return extractExpiration(token).before(new Date());
     }
 
-    //region master branch method
-//    public String generateJwtToken(Authentication authentication){
-//        /**
-//         * func getPrincipal() return Principal obj associated with authentication obj
-//         * Principle obj represents the identity of the user (username, password)
-//         */
-//        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-//
-//        log.info(
-//                "exp gen: " + Date.from(ZonedDateTime.now().plusSeconds(jwtExprirationMs/1000).toInstant())
-//        );
-//
-//        log.debug("gen at " + System.currentTimeMillis());
-//        return Jwts.builder()
-//                .setSubject((userPrincipal.getUsername()))
-//                .setIssuedAt(new Date())
-//                .setExpiration(
-//                        Date.from(ZonedDateTime.now().plusSeconds(jwtExprirationMs/1000).toInstant())
-//                )
-//                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-//                .compact()
-//                ;
-//    }
-    //endregion
 
-    //region master branch method
-//    public boolean validateJwtToken(String authToken){
-//        try{
-//            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
-//            return true;
-//        } catch (SignatureException e){
-//            log.error("Invalid JWT signature: {}", e.getMessage());
-//        }catch (MalformedJwtException e) {
-//            log.error("Invalid JWT token: {}", e.getMessage());
-//        } catch (ExpiredJwtException e) {
-//            log.error("JWT token is expired: {}", e.getMessage());
-//        } catch (UnsupportedJwtException e) {
-//            log.error("JWT token is unsupported: {}", e.getMessage());
-//        } catch (IllegalArgumentException e) {
-//            log.error("JWT claims string is empty: {}", e.getMessage());
-//        }
-//        return false;
-//    }
-    //end region
+
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
